@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@drawable/background"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="match_parent"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/newcar"
+            android:layout_height="130dp">
+        </ImageView>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+        <TextView
+            android:id="@+id/company_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:gravity="center"
+            android:text="YAY"
+            android:shadowColor="@color/TransparentGrey"
+            android:shadowDx="2"
+            android:shadowDy="3"
+            android:shadowRadius="12"
+            android:textColor="#ffffff"
+            android:textSize="42dp">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/company_slogan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:gravity="center"
+            android:shadowColor="@color/TransparentGrey"
+            android:shadowDx="2"
+            android:shadowDy="3"
+            android:shadowRadius="12"
+            android:text="YOUR RIDE ON YOUR WAY "
+            android:textColor="#ffffff"
+            android:textSize="16dp">
+
+        </TextView>
+
+    </LinearLayout>
+
+</RelativeLayout>

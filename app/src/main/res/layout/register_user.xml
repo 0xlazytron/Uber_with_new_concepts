@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background"
+    android:layout_height="match_parent"
+    tools:context=".registerUser">
+    <TextView
+        android:id="@+id/letsregister"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:text="Let's Get You Registered!"
+        android:textColor="@color/white"
+        android:textSize="25dp"
+        android:gravity="center"
+        android:shadowColor="@color/TransparentGrey"
+        android:shadowDx="2"
+        android:shadowDy="1"
+        android:shadowRadius="16"
+        android:fontFamily="@font/poppins_semibold"
+        android:layout_height="wrap_content">
+
+    </TextView>
+
+    <LinearLayout
+        android:id="@+id/first"
+        android:layout_below="@+id/letsregister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:weightSum="2">
+        <EditText
+            android:id="@+id/rdrName"
+            android:textColor="@color/chilli"
+            android:layout_width="match_parent"
+            android:hint="  FULL NAME"
+            android:layout_marginLeft="50dp"
+            android:background="@color/white"
+            android:layout_marginRight="50dp"
+            android:inputType="text"
+            android:padding="10dp"
+            android:textSize="16dp"
+            android:fontFamily="@font/poppins"
+            android:drawableLeft="@drawable/ic_person"
+            android:backgroundTint="@color/white"
+            android:textColorHint="@color/chilli"
+            android:layout_height="wrap_content">
+
+        </EditText>
+        <EditText
+            android:id="@+id/rdrPhone"
+            android:layout_width="match_parent"
+            android:hint="  PHONE"
+            android:textColor="@color/chilli"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="50dp"
+            android:background="@color/white"
+            android:layout_marginRight="50dp"
+            android:padding="10dp"
+            android:inputType="phone"
+            android:textSize="16dp"
+            android:fontFamily="@font/poppins"
+            android:drawableLeft="@drawable/ic_phone_2"
+            android:backgroundTint="@color/white"
+            android:textColorHint="@color/chilli"
+            android:layout_height="wrap_content">
+
+        </EditText>
+
+        <EditText
+            android:id="@+id/rdrEmail"
+            android:layout_width="match_parent"
+            android:hint="  Email"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="50dp"
+            android:background="@color/white"
+            android:layout_marginRight="50dp"
+            android:padding="10dp"
+            android:textColor="@color/chilli"
+            android:inputType="textEmailAddress"
+            android:textSize="16dp"
+            android:fontFamily="@font/poppins"
+            android:drawableLeft="@drawable/ic_email"
+            android:backgroundTint="@color/white"
+            android:textColorHint="@color/chilli"
+            android:layout_height="wrap_content">
+
+        </EditText>
+        <EditText
+            android:id="@+id/rdrPassword"
+            android:layout_width="match_parent"
+            android:hint="  PASSWORD"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="50dp"
+            android:background="@color/white"
+            android:layout_marginRight="50dp"
+            android:padding="10dp"
+            android:inputType="textPassword"
+            android:textSize="16dp"
+            android:textColor="@color/chilli"
+            android:fontFamily="@font/poppins"
+            android:drawableLeft="@drawable/ic_lock"
+            android:backgroundTint="@color/white"
+            android:textColorHint="@color/chilli"
+            android:layout_height="wrap_content">
+
+        </EditText>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="20dp">
+            <RadioGroup
+                android:id="@+id/gender"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:id="@+id/rdrMale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="80dp"
+                    android:buttonTint="@color/white"
+                    android:checked="true"
+                    android:fontFamily="@font/poppins"
+                    android:text="MALE"
+                    android:textColor="@color/white"
+
+                    android:textSize="16dp">
+
+                </RadioButton>
+
+                <RadioButton
+                    android:id="@+id/rdrFemale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/white"
+                    android:checked="false"
+                    android:fontFamily="@font/poppins"
+                    android:text="FEMALE"
+                    android:textColor="@color/white"
+
+                    android:textSize="16dp">
+
+                </RadioButton>
+            </RadioGroup>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_below="@+id/first"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+        <Button
+            android:layout_alignBottom="@+id/first"
+            android:id="@+id/rdrContinue"
+            android:text="Continue"
+            android:textColor="@color/white"
+            android:padding="10dp"
+
+            android:background="@color/blue"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:shadowColor="@color/TransparentGrey"
+            android:shadowDx="2"
+            android:shadowDy="3"
+            android:shadowRadius="12"
+            android:drawableEnd="@drawable/icright"
+            android:layout_width="match_parent"
+            android:fontFamily="@font/poppins_semibold"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/icright">
+
+        </Button>
+        <TextView
+            android:layout_width="match_parent"
+            android:textColor="@color/white"
+            android:textSize="12dp"
+            android:layout_marginLeft="42dp"
+            android:layout_marginRight="42dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="20dp"
+            android:shadowColor="@color/TransparentGrey"
+            android:shadowDx="2"
+            android:shadowDy="1"
+            android:shadowRadius="16"
+            android:text="BY CLICKING CONTINUE YOU ARE AGREEING TO OUR LICENSE AGREEMENTS"
+            android:layout_height="wrap_content">
+
+        </TextView>
+    </LinearLayout>
+</RelativeLayout>

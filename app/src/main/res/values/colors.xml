@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#ffffff</color>
+    <color name="colorPrimary">#03DAC5</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="chilli">#FE7689</color>
+    <color name="litechilli">#FF9B8C</color>
+    <color name="TransparentGrey">#7F000000</color>
+    <color name="black">#000000</color>
+    <color name="blue">#FF00C0FF</color>
+    <color name="bluedark">#FF5558FF</color>
+    <color name="chili">#FB0404</color>
+    <color name="green">#59F436</color>
+</resources>

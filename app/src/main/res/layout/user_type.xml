@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp"
+    android:background="@drawable/gradientbg"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/l1"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:textColor="@color/white"
+                android:text="TELL US WHO YOU ARE??"
+                android:gravity="center"
+                android:shadowColor="@color/TransparentGrey"
+                android:shadowDx="2"
+                android:shadowDy="3"
+                android:shadowRadius="12"
+                android:textSize="18dp"
+                android:fontFamily="@font/poppins_semibold"
+                android:layout_height="wrap_content">
+
+            </TextView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/driver"
+                android:text="i'am a Driver"
+                android:textColor="@color/white"
+                android:padding="10dp"
+
+                android:background="@color/blue"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:shadowColor="@color/TransparentGrey"
+                android:shadowDx="2"
+                android:shadowDy="3"
+                android:shadowRadius="12"
+                android:drawableStart="@drawable/ic_pathcar"
+                android:layout_width="match_parent"
+                android:fontFamily="@font/poppins_semibold"
+                android:layout_height="wrap_content">
+
+            </Button>
+            <Button
+                android:id="@+id/rider"
+                android:layout_width="match_parent"
+                android:text="i'am a Rider"
+                android:padding="10dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/poppins_semibold"
+                android:paddingRight="12dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:background="@color/chilli"
+                android:drawableStart="@drawable/ic_walk"
+
+                android:textColor="@color/white"
+                android:shadowColor="@color/TransparentGrey"
+                android:shadowDx="2"
+                android:shadowDy="3"
+                android:shadowRadius="12"
+                android:layout_height="wrap_content">
+
+            </Button>
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>
