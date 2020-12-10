@@ -60,8 +60,8 @@ public class RiderHome extends AppCompatActivity {
         setContentView(R.layout.rider_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        drawer = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
+        drawer = findViewById(R.id.drawer_layout_rider);
+        navigationView = findViewById(R.id.nav_view_rider);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -97,7 +97,7 @@ public class RiderHome extends AppCompatActivity {
                         waitingDialog.setMessage("uploading.....");
                         waitingDialog.show();
                         String unique_name = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                        StorageReference avatarFolder = storageReference.child("avatars/"+unique_name);
+                        StorageReference avatarFolder = storageReference.child("riderAvatar/"+unique_name);
                         avatarFolder.putFile(ImageUri)
                                 .addOnFailureListener(e -> Snackbar.make(drawer,e.getMessage(),Snackbar.LENGTH_SHORT).show())
                                 .addOnCompleteListener(task -> {
@@ -105,7 +105,7 @@ public class RiderHome extends AppCompatActivity {
                                         avatarFolder.getDownloadUrl().addOnSuccessListener(uri -> {
                                             Map<String,Object>updateData = new HashMap<>();
                                             updateData.put("avatar",uri.toString());
-                                            UserUtils.updatesUser(drawer,updateData);
+                                            UserUtils.updatesRider(drawer,updateData);
                                         });
                                     }
                                     waitingDialog.dismiss();
@@ -165,7 +165,7 @@ public class RiderHome extends AppCompatActivity {
         TextView txt_email = (TextView)headerView.findViewById(R.id.txt_email);
         img_avatar = (ImageView)headerView.findViewById(R.id.img_avatar);
 
-        txt_name.setText(Common.buildWelcomeMessage());
+        txt_name.setText(Common.buildWelcomeMessageRider());
         txt_phone.setText(Common.currentUser!=null ? Common.currentUser.getPhone() : " ");
         txt_email.setText(Common.currentUser!=null ? Common.currentUser.getEmail() : " ");
         img_avatar.setOnClickListener(v -> {

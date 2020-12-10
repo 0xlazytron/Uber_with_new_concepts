@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation"
+    android:id="@+id/mobile_navigation_rider"
     app:startDestination="@+id/nav_home">
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.paco.uber20.ui.home.DriverFragment"
+        android:name="com.paco.uber20.ui.rider.RiderFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_rider" />
 
 </navigation>

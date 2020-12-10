@@ -1,4 +1,5 @@
 package com.paco.uber20;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -8,48 +9,76 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
+import android.widget.TextView;
 
 import androidx.core.app.NotificationCompat;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.paco.uber20.Model.AnimationModel;
+import com.paco.uber20.Model.DriverGeoModel;
 import com.paco.uber20.Model.driverModel;
 import com.paco.uber20.Model.riderModel;
 import com.paco.uber20.Services.MessagingServices;
 
+import java.io.ObjectInputStream;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class Common {
     public static final String USERS_INFO_REFERENCE = "Users";
-    public static final String DRIVER_INFO_REFERENCE = "Users/DriverInfo";
+    public static final String DRIVER_INFO_REFERENCE = "Users/Drivers";
     public static final String RIDER_INFO_REFERENCE = "Users/Riders";
     public static final String TOKEN_REFERENCE = "Token";
     public static final String NT_TITLE = "title";
     public static final String NT_CONTENT = "body";
     public static final String DRIVERS_LOCATION_REFERENCES = "Users/DriversLocation";
+    public static final String RIDERS_LOCATION_REFERENCES = "Users/RidersLocation";
     public static driverModel currentDriver;
     public static riderModel currentUser;
+    public static Set<DriverGeoModel> driversFound = new HashSet<DriverGeoModel>();
+    public static HashMap<String, Marker> markerList = new HashMap<>();
+    public static HashMap<String, AnimationModel> driverLocationSubscribe = new HashMap<String, AnimationModel>();
+
     public static String buildWelcomeMessage() {
-        if(Common.currentDriver!=null){
+        if (Common.currentDriver != null) {
             return new StringBuilder("Welcome ")
                     .append("")
                     .append(Common.currentDriver.getName()).toString();
-        }else{
+        } else {
             return "";
         }
     }
 
-    public static void showNotification(Context context, int id, String title, String body,Intent i) {
+    public static String buildWelcomeMessageRider() {
+        if (Common.currentUser != null) {
+            return new StringBuilder("Welcome ")
+                    .append("")
+                    .append(Common.currentUser.getName()).toString();
+        } else {
+            return "";
+        }
+    }
+
+    public static void showNotification(Context context, int id, String title, String body, Intent i) {
         PendingIntent pendingIntent = null;
-        if(i !=null){
-            pendingIntent = PendingIntent.getActivity(context,id,i, PendingIntent.FLAG_UPDATE_CURRENT);
+        if (i != null) {
+            pendingIntent = PendingIntent.getActivity(context, id, i, PendingIntent.FLAG_UPDATE_CURRENT);
             String NOTIFICATION_CHANNEL_ID = "com.paco.uber20";
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O)
-            {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
                         "uber 20",
                         NotificationManager.IMPORTANCE_HIGH);
                 notificationChannel.setDescription("UBER 20");
                 notificationChannel.enableLights(true);
                 notificationChannel.enableLights(true);
-                notificationChannel.setVibrationPattern(new long[]{0,1000,500,1000});
+                notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
                 notificationChannel.enableVibration(true);
                 notificationManager.createNotificationChannel(notificationChannel);
             }
@@ -62,11 +91,75 @@ public class Common {
                     .setSmallIcon(R.drawable.ic_car_1)
                     .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),
                             R.drawable.ic_car_1));
-            if(pendingIntent !=null){
+            if (pendingIntent != null) {
                 builder.setContentIntent(pendingIntent);
             }
             Notification notification = builder.build();
             notificationManager.notify(id, notification);
+        }
+    }
+
+    public static String buildName(String name) {
+        return new StringBuilder(name).append(" ").toString();
+    }
+
+    public static List<LatLng> decodePoly(String encoded) {
+        List poly = new ArrayList();
+        int index=0,len=encoded.length();
+        int lat=0,lng=0;
+        while(index < len)
+        {
+            int b,shift=0,result=0;
+            do{
+                b=encoded.charAt(index++)-63;
+                result |= (b & 0x1f) << shift;
+                shift+=5;
+
+            }while(b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1):(result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do{
+                b = encoded.charAt(index++)-63;
+                result |= (b & 0x1f) << shift;
+                shift +=5;
+            }while(b >= 0x20);
+            int dlng = ((result & 1)!=0 ? ~(result >> 1): (result >> 1));
+            lng +=dlng;
+
+            LatLng p = new LatLng((((double)lat / 1E5)),
+                    (((double)lng/1E5)));
+            poly.add(p);
+        }
+        return poly;
+    }
+    public static float getBearing(LatLng begin, LatLng end) {
+        //You can copy this function by link at description
+        double lat = Math.abs(begin.latitude - end.latitude);
+        double lng = Math.abs(begin.longitude - end.longitude);
+
+        if (begin.latitude < end.latitude && begin.longitude < end.longitude)
+            return (float) (Math.toDegrees(Math.atan(lng / lat)));
+        else if (begin.latitude >= end.latitude && begin.longitude < end.longitude)
+            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 90);
+        else if (begin.latitude >= end.latitude && begin.longitude >= end.longitude)
+            return (float) (Math.toDegrees(Math.atan(lng / lat)) + 180);
+        else if (begin.latitude < end.latitude && begin.longitude >= end.longitude)
+            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 270);
+        return -1;
+    }
+
+    public static void setWelcomeMessage(TextView txt_welcome) {
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if(hour >=1 && hour <=12){
+            txt_welcome.setText(new StringBuilder("Good Morning!"));
+
+        }else if(hour >=13 && hour <=17  ){
+            txt_welcome.setText(new StringBuilder("Good Afternoon!"));
+        }else{
+            txt_welcome.setText(new StringBuilder("Good Evening!"));
         }
     }
 }

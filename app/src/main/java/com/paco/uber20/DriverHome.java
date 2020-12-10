@@ -96,7 +96,7 @@ public class DriverHome extends AppCompatActivity {
                        waitingDialog.setMessage("uploading.....");
                        waitingDialog.show();
                        String unique_name = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                       StorageReference avatarFolder = storageReference.child("avatars/"+unique_name);
+                       StorageReference avatarFolder = storageReference.child("driverAvatars/"+unique_name);
                        avatarFolder.putFile(ImageUri)
                                .addOnFailureListener(e -> Snackbar.make(drawer,e.getMessage(),Snackbar.LENGTH_SHORT).show())
                                .addOnCompleteListener(task -> {

@@ -15,4 +15,12 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="title_activity_rider_home">riderHome</string>
+    <string name="title_activity_rider_map">Map</string>
+    <string name="driver_not_found">No Driver Found!</string>
+    <string name="not_found_with_key">Driver Not Found With Key!</string>
+    <string name="welcome">Good afternoon!</string>
+    <string name="choose_place_saved">Choose a Saved Place</string>
+    <string name="where_to">Where to go?</string>
+    <string name="city_name_empty">City Name is Empty!</string>
+
 </resources>

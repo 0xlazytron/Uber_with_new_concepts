@@ -86,7 +86,7 @@ public class registerUser extends AppCompatActivity {
                     .addOnFailureListener(e -> Toast.makeText(registerUser.this, e.getMessage(), Toast.LENGTH_SHORT).show())
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(this, "[SUCCESS] => THANK YOU FOR JOINING US!", Toast.LENGTH_LONG).show();
-                        Intent goRiderHome = new Intent(registerUser.this, DriverHome.class);
+                        Intent goRiderHome = new Intent(registerUser.this, RiderHome.class);
                         startActivity(goRiderHome);
                         finish();
                     });

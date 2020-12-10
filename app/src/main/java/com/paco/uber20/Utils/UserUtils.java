@@ -25,7 +25,14 @@ public class UserUtils {
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .updateChildren(updateData)
                 .addOnFailureListener(e -> Snackbar.make(view,e.getMessage(),Snackbar.LENGTH_SHORT).show())
-                .addOnSuccessListener(aVoid -> Snackbar.make(view,"Avatar Updeted Success !", Snackbar.LENGTH_SHORT).show());
+                .addOnSuccessListener(aVoid -> Snackbar.make(view,"Avatar Updated SuccessFully !", Snackbar.LENGTH_SHORT).show());
+    }
+    public static void updatesRider(View view, Map<String, Object> updateData) {
+        FirebaseDatabase.getInstance().getReference(Common.RIDER_INFO_REFERENCE)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .updateChildren(updateData)
+                .addOnFailureListener(e -> Snackbar.make(view,e.getMessage(),Snackbar.LENGTH_SHORT).show())
+                .addOnSuccessListener(aVoid -> Snackbar.make(view,"Avatar Updated SuccessFully !", Snackbar.LENGTH_SHORT).show());
     }
 
     public static void updateToken(Context context, String token) {
@@ -34,17 +41,9 @@ public class UserUtils {
                 .getReference(Common.TOKEN_REFERENCE)
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .setValue(tokenModel)
-        .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        .addOnFailureListener(e -> Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show())
+                .addOnSuccessListener(aVoid -> {
 
-            }
-        }).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-
-            }
         });
     }
 }
