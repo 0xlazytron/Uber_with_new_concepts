@@ -22,5 +22,6 @@
     <string name="choose_place_saved">Choose a Saved Place</string>
     <string name="where_to">Where to go?</string>
     <string name="city_name_empty">City Name is Empty!</string>
+    <string name="title_activity_request_driver">Map</string>
 
 </resources>

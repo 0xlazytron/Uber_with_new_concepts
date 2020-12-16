@@ -3,6 +3,7 @@ package com.paco.uber20.ui.rider;
 import android.Manifest;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Address;
@@ -46,6 +47,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
@@ -70,14 +72,17 @@ import com.paco.uber20.Callback.IFirebaseFailedListener;
 import com.paco.uber20.Common;
 import com.paco.uber20.Model.AnimationModel;
 import com.paco.uber20.Model.DriverGeoModel;
+import com.paco.uber20.Model.EventBus.SelectedPlaceEvent;
 import com.paco.uber20.Model.GeoQueryModel;
 import com.paco.uber20.Model.driverModel;
 import com.paco.uber20.R;
 import com.paco.uber20.Remote.IGoogleAPI;
 import com.paco.uber20.Remote.RetrofitClient;
+import com.paco.uber20.RequestDriver;
 import com.paco.uber20.ui.rider.RiderViewModel;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -187,14 +192,22 @@ public class RiderFragment extends Fragment implements OnMapReadyCallback,
         autocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ID,Place.Field.ADDRESS,Place.Field.NAME,Place.Field.LAT_LNG));
         autocompleteSupportFragment.setHint(getString(R.string.where_to));
         autocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @SuppressLint("MissingPermission")
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                Snackbar.make(getView(),""+place.getLatLng(),Snackbar.LENGTH_LONG).show();
+//                Snackbar.make(getView(),""+place.getLatLng(),Snackbar.LENGTH_LONG).show();
+                fusedLocationProviderClient.getLastLocation()
+                        .addOnSuccessListener(location -> {
+                            LatLng origin = new LatLng(location.getLatitude(),location.getLongitude());
+                            LatLng destination = new LatLng(place.getLatLng().latitude,place.getLatLng().longitude);
+                            startActivity(new Intent(getContext(), RequestDriver.class));
+                            EventBus    .getDefault().postSticky(new SelectedPlaceEvent(origin,destination));
+                        });
             }
 
             @Override
             public void onError(@NonNull Status status) {
-            Snackbar.make(getView(),""+status.getStatusMessage(),Snackbar.LENGTH_LONG).show();
+                Snackbar.make(getView(),""+status.getStatusMessage(),Snackbar.LENGTH_LONG).show();
             }
         });
         iGoogleAPI = RetrofitClient.getInstance().create(IGoogleAPI.class);
@@ -289,88 +302,88 @@ public class RiderFragment extends Fragment implements OnMapReadyCallback,
                 }
                 if(!TextUtils.isEmpty(cityName)){
                     //Query To get Driver Location From Db
-                DatabaseReference driver_location_ref = FirebaseDatabase.getInstance()
-                        .getReference(Common.DRIVERS_LOCATION_REFERENCES)
-                        .child(cityName);
-                GeoFire gf = new GeoFire(driver_location_ref);
-                GeoQuery geoQuery = gf.queryAtLocation(new GeoLocation(
-                                location.getLatitude(), location.getLongitude()),
-                        distance);
-                geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
-                    @Override
-                    public void onKeyEntered(String key, GeoLocation location) {
-                        Common.driversFound.add(new DriverGeoModel(key, location));
-
-                    }
-
-                    @Override
-                    public void onKeyExited(String key) {
-
-                    }
-
-                    @Override
-                    public void onKeyMoved(String key, GeoLocation location) {
-
-                    }
-
-                    @Override
-                    public void onGeoQueryReady() {
-                        if (distance <= LIMIT_RANGE) {
-                            distance++;
-                            loadAvailabelDrivers();//continue search in new Distance
-                        } else {
-                            distance = 1.0;
-                            addDriverMarker();
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onGeoQueryError(DatabaseError error) {
-                        Snackbar.make(getView(), error.getMessage(), Snackbar.LENGTH_LONG).show();
-                    }
-                });
-                //Listen to new Driver in city & range
-                driver_location_ref.addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        //have new Driver
-                        GeoQueryModel geoQueryModel = dataSnapshot.getValue(GeoQueryModel.class);
-                        GeoLocation geoLocation = new GeoLocation(geoQueryModel.getL().get(0),
-                                geoQueryModel.getL().get(1));
-                        DriverGeoModel driverGeoModel = new DriverGeoModel(dataSnapshot.getKey(),
-                                geoLocation);
-                        Location newDriverLocation = new Location("");
-                        newDriverLocation.setLatitude(geoLocation.latitude);
-                        newDriverLocation.setLongitude(geoLocation.longitude);
-                        float newDistance = location.distanceTo(newDriverLocation)/1000; //in KM
-                        if(newDistance<=LIMIT_RANGE){
-                            findDriverByKey(driverGeoModel); //If Driver in Range, add to map
+                    DatabaseReference driver_location_ref = FirebaseDatabase.getInstance()
+                            .getReference(Common.DRIVERS_LOCATION_REFERENCES)
+                            .child(cityName);
+                    GeoFire gf = new GeoFire(driver_location_ref);
+                    GeoQuery geoQuery = gf.queryAtLocation(new GeoLocation(
+                                    location.getLatitude(), location.getLongitude()),
+                            distance);
+                    geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+                        @Override
+                        public void onKeyEntered(String key, GeoLocation location) {
+                            Common.driversFound.add(new DriverGeoModel(key, location));
 
                         }
-                    }
 
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        @Override
+                        public void onKeyExited(String key) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                        @Override
+                        public void onKeyMoved(String key, GeoLocation location) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        @Override
+                        public void onGeoQueryReady() {
+                            if (distance <= LIMIT_RANGE) {
+                                distance++;
+                                loadAvailabelDrivers();//continue search in new Distance
+                            } else {
+                                distance = 1.0;
+                                addDriverMarker();
+                            }
 
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onGeoQueryError(DatabaseError error) {
+                            Snackbar.make(getView(), error.getMessage(), Snackbar.LENGTH_LONG).show();
+                        }
+                    });
+                    //Listen to new Driver in city & range
+                    driver_location_ref.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            //have new Driver
+                            GeoQueryModel geoQueryModel = dataSnapshot.getValue(GeoQueryModel.class);
+                            GeoLocation geoLocation = new GeoLocation(geoQueryModel.getL().get(0),
+                                    geoQueryModel.getL().get(1));
+                            DriverGeoModel driverGeoModel = new DriverGeoModel(dataSnapshot.getKey(),
+                                    geoLocation);
+                            Location newDriverLocation = new Location("");
+                            newDriverLocation.setLatitude(geoLocation.latitude);
+                            newDriverLocation.setLongitude(geoLocation.longitude);
+                            float newDistance = location.distanceTo(newDriverLocation)/1000; //in KM
+                            if(newDistance<=LIMIT_RANGE){
+                                findDriverByKey(driverGeoModel); //If Driver in Range, add to map
+
+                            }
+                        }
+
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        }
+
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                        }
+
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }else{
                     Snackbar.make(getView(),getString(R.string.city_name_empty),Snackbar.LENGTH_LONG).show();
                 }
@@ -491,7 +504,6 @@ public class RiderFragment extends Fragment implements OnMapReadyCallback,
     public void onFirebaseLoadFailed(String messgae) {
         Snackbar.make(getView(), messgae, Snackbar.LENGTH_LONG).show();
     }
-
     @Override
     public void onDriverInfoLoadSuccess(DriverGeoModel driverGeoModel) {
         //if already have marker with this key, doesn't set again
@@ -565,74 +577,74 @@ public class RiderFragment extends Fragment implements OnMapReadyCallback,
             compositeDisposable.add(iGoogleAPI.getDirections("driving",
                     "less_driving",
                     from,to,getString(R.string.google_api_key))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(returnResult->{
-                Log.d("API_RETURN",returnResult);
-                try{
-                    JSONObject jsonObject = new JSONObject(returnResult);
-                    JSONArray jsonArray = jsonObject.getJSONArray("routes");
-                    for(int i = 0; i<jsonArray.length(); i++){
-                        JSONObject route = jsonArray.getJSONObject(i);
-                        JSONObject poly = route.getJSONObject("overview_polyline");
-                        String polyline = poly.getString("points");
-                       // polylinelist = Common.decodePoly(polyline);
-                        animationModel.setPolylinelist(Common.decodePoly(polyline));
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(returnResult->{
+                        Log.d("API_RETURN",returnResult);
+                        try{
+                            JSONObject jsonObject = new JSONObject(returnResult);
+                            JSONArray jsonArray = jsonObject.getJSONArray("routes");
+                            for(int i = 0; i<jsonArray.length(); i++){
+                                JSONObject route = jsonArray.getJSONObject(i);
+                                JSONObject poly = route.getJSONObject("overview_polyline");
+                                String polyline = poly.getString("points");
+                                // polylinelist = Common.decodePoly(polyline);
+                                animationModel.setPolylinelist(Common.decodePoly(polyline));
 
-                    }
-                    //Moving Driver Car
+                            }
+                            //Moving Driver Car
 //                    handler = new Handler();
 //                    index  = -1;
 //                    next = 1;
-                    animationModel.setIndex(-1);
-                    animationModel.setNext(1);
-                    Runnable runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            if (animationModel.getPolylinelist()!=null && animationModel.getPolylinelist().size() > 1) {
-                                if (animationModel.getIndex() <animationModel.getPolylinelist().size() - 2) {
+                            animationModel.setIndex(-1);
+                            animationModel.setNext(1);
+                            Runnable runnable = new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (animationModel.getPolylinelist()!=null && animationModel.getPolylinelist().size() > 1) {
+                                        if (animationModel.getIndex() <animationModel.getPolylinelist().size() - 2) {
 //                                    index++;
-                                    animationModel.setIndex(animationModel.getIndex()+1);
+                                            animationModel.setIndex(animationModel.getIndex()+1);
 //                                    next = index + 1;
-                                    animationModel.setNext(animationModel.getIndex()+1);
+                                            animationModel.setNext(animationModel.getIndex()+1);
 //                                    start = polylinelist.get(index);
-                                    animationModel.setStart(animationModel.getPolylinelist().get(animationModel.getIndex()));
+                                            animationModel.setStart(animationModel.getPolylinelist().get(animationModel.getIndex()));
 //                                    end = polylinelist.get(next);
-                                    animationModel.setEnd(animationModel.getPolylinelist().get(animationModel.getNext()));
+                                            animationModel.setEnd(animationModel.getPolylinelist().get(animationModel.getNext()));
 
-                                }
-                                ValueAnimator valueAnimator = ValueAnimator.ofInt(0, 1);
-                                valueAnimator.setDuration(3000);
-                                valueAnimator.setInterpolator(new LinearInterpolator());
-                                valueAnimator.addUpdateListener(animation -> {
+                                        }
+                                        ValueAnimator valueAnimator = ValueAnimator.ofInt(0, 1);
+                                        valueAnimator.setDuration(3000);
+                                        valueAnimator.setInterpolator(new LinearInterpolator());
+                                        valueAnimator.addUpdateListener(animation -> {
 //                                    v = animation.getAnimatedFraction();
-                                    animationModel.setV(animation.getAnimatedFraction());
+                                            animationModel.setV(animation.getAnimatedFraction());
 //                                    lat = v * end.latitude + (1 - v) * start.latitude;
-                                    animationModel.setLat(animationModel.getV() * animationModel.getEnd().latitude + (1-animationModel.getV())*animationModel.getStart().latitude);
-                                    animationModel.setLng(animationModel.getV() * animationModel.getEnd().longitude + (1-animationModel.getV())*animationModel.getStart().longitude);
+                                            animationModel.setLat(animationModel.getV() * animationModel.getEnd().latitude + (1-animationModel.getV())*animationModel.getStart().latitude);
+                                            animationModel.setLng(animationModel.getV() * animationModel.getEnd().longitude + (1-animationModel.getV())*animationModel.getStart().longitude);
 //                                    lng = v * end.longitude + (1 - v) * start.longitude;
-                                    LatLng newPos = new LatLng(animationModel.getLat(), animationModel.getLng());
-                                    currentMarker.setPosition(newPos);
-                                    currentMarker.setAnchor(0.5f, 0.5f);
-                                    currentMarker.setRotation(Common.getBearing(animationModel.getStart(), newPos));
-                                });
-                                valueAnimator.start();
-                                if (animationModel.getIndex() < animationModel.getPolylinelist().size() - 2) {
-                                    animationModel.getHandler().postDelayed(this, 1500);
+                                            LatLng newPos = new LatLng(animationModel.getLat(), animationModel.getLng());
+                                            currentMarker.setPosition(newPos);
+                                            currentMarker.setAnchor(0.5f, 0.5f);
+                                            currentMarker.setRotation(Common.getBearing(animationModel.getStart(), newPos));
+                                        });
+                                        valueAnimator.start();
+                                        if (animationModel.getIndex() < animationModel.getPolylinelist().size() - 2) {
+                                            animationModel.getHandler().postDelayed(this, 1500);
 
-                                }else if(animationModel.getIndex() < animationModel.getPolylinelist().size() - 1){
-                                    animationModel.setRun(false);
-                                    Common.driverLocationSubscribe.put(key,animationModel);
+                                        }else if(animationModel.getIndex() < animationModel.getPolylinelist().size() - 1){
+                                            animationModel.setRun(false);
+                                            Common.driverLocationSubscribe.put(key,animationModel);
+                                        }
+
+                                    }
                                 }
-
-                            }
+                            };
+                            animationModel.getHandler().postDelayed(runnable, 1500);
+                        }catch(Exception e){
+                            Snackbar.make(getView(), e.getMessage(),Snackbar.LENGTH_LONG).show();
                         }
-                    };
-                    animationModel.getHandler().postDelayed(runnable, 1500);
-                }catch(Exception e){
-                    Snackbar.make(getView(), e.getMessage(),Snackbar.LENGTH_LONG).show();
-                }
-            }));
+                    }));
         }
     }
 }

@@ -30,6 +30,10 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".RequestDriver"
+            android:label="@string/title_activity_request_driver"></activity>
         <activity
             android:name=".RiderHome"
             android:label="@string/title_activity_rider_home"

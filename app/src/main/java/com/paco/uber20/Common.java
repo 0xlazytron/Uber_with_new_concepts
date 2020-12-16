@@ -162,4 +162,18 @@ public class Common {
             txt_welcome.setText(new StringBuilder("Good Evening!"));
         }
     }
+
+    public static String formatDuration(String duration) {
+        if(duration.contains("mins")){
+            return duration.substring(0,duration.length()-1);
+
+        }else{
+            return duration;
+        }
+    }
+
+    public static String formatAddress(String start_address) {
+        int firstIndexOfComma = start_address.indexOf(",");
+        return start_address.substring(0,firstIndexOfComma);
+    }
 }

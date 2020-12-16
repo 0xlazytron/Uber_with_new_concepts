@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="10dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:background="#FFFFFF"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txt_destination"
+                android:layout_width="wrap_content"
+                android:text="Gilgit Baltistan"
+                android:fontFamily="@font/poppins"
+                android:layout_marginLeft="20dp"
+                android:layout_gravity="center_vertical"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_go">
+
+            </ImageView>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_destination">
+
+    </ImageView>
+</LinearLayout>

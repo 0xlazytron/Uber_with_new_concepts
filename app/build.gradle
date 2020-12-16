@@ -75,5 +75,8 @@ dependencies {
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
     //google places
     implementation 'com.google.android.libraries.places:places:2.3.0'
-
+    //green Robot
+    implementation 'org.greenrobot:eventbus:3.2.0'
+    //google maps utils
+    implementation 'com.google.maps.android:android-maps-utils-v3:2.0.3'
 }
